@@ -35,7 +35,10 @@ obj.mapping = {
   nextScreen = { obj.mash, 'n' },
   previousScreen = { obj.mash, 'p' },
   resizeOut = { obj.mash, '=' },
-  resizeIn = { obj.mash, '-' }
+  resizeIn = { obj.mash, '-' },
+  minimize = { obj.mash, 'h' },
+  minimizeAll = { obj.mash, 'j' },
+  unminimizeAll = { obj.mash, 'k' }
 }
 
 local units = {
@@ -58,6 +61,20 @@ local units = {
 }
 
 function move(unit) hs.window.focusedWindow():move(unit, nil, true, 0) end
+
+function minimizeAllVisibleWindows()
+  vws = hs.window.orderedWindows()
+  for i, vw in ipairs(vws) do
+    vw:minimize()
+  end
+end
+
+function unminimizeAllWindows()
+  mws = hs.window.minimizedWindows()
+  for i, mw in ipairs(mws) do
+    mw:unminimize()
+  end
+end
 
 function resizeWindowInSteps(increment)
   screen = hs.window.focusedWindow():screen():frame()
@@ -143,6 +160,10 @@ function obj:previousScreen() hs.window.focusedWindow():moveToScreen(hs.window.f
 function obj:resizeOut() resizeWindowInSteps(true) end
 function obj:resizeIn() resizeWindowInSteps(false) end
 
+function obj:minimize() hs.window.focusedWindow():minimize() end
+function obj:minimizeAll() minimizeAllVisibleWindows() end
+function obj:unminimizeAll() unminimizeAllWindows() end
+
 --- HammerspoonShiftIt:bindHotkeys(mapping)
 --- Method
 --- Binds hotkeys for HammerspoonShiftIt
@@ -169,6 +190,9 @@ function obj:resizeIn() resizeWindowInSteps(false) end
 ---   * previousScreen
 ---   * resizeOut
 ---   * resizeIn
+---   * minimize
+---   * minimizeAll
+---   * unminimizeAll
 function obj:bindHotkeys(mapping)
 
   if (mapping) then
@@ -195,6 +219,9 @@ function obj:bindHotkeys(mapping)
   hs.hotkey.bind(self.mapping.previousScreen[1], self.mapping.previousScreen[2], function() self:previousScreen() end)
   hs.hotkey.bind(self.mapping.resizeOut[1], self.mapping.resizeOut[2], function() self:resizeOut() end)
   hs.hotkey.bind(self.mapping.resizeIn[1], self.mapping.resizeIn[2], function() self:resizeIn() end)
+  hs.hotkey.bind(self.mapping.minimize[1], self.mapping.minimize[2], function() self:minimize() end)
+  hs.hotkey.bind(self.mapping.minimizeAll[1], self.mapping.minimizeAll[2], function() self:minimizeAll() end)
+  hs.hotkey.bind(self.mapping.unminimizeAll[1], self.mapping.unminimizeAll[2], function() self:unminimizeAll() end)
 
   return self
 end
